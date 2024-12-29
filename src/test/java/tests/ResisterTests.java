@@ -1,7 +1,9 @@
 package tests;
 
+import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
 import common.DatabaseConnection;
 import common.RestAssuredSetup;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
 import jakarta.persistence.NoResultException;
@@ -22,10 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static common.ConstantUtils.CREATE_ACCOUNT_PATH;
 import static common.MethodUtils.createAccount;
 import static data.JsonData.ACCOUNT_EMPTY_OR_NULL_RESPONSE;
-import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
-import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
+import static data.SchemaData.DUPLICATE_EMAIL_OR_USERNAME_RESPONSE_SCHEMA;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
+import static net.javacrumbs.jsonunit.JsonMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -145,20 +149,61 @@ public class ResisterTests {
     @ParameterizedTest
     @MethodSource("emptyNullRegister")
     public void TC_005(String name, String username, String email, String password){
-        String random = String.valueOf(System.currentTimeMillis());
         Account account = new Account(name, username, email, password);
         Response response= createAccount(account);
 
         sessionFactory.inTransaction(session -> {
             try{
-                AccountEntity accountEntity = getAccountEntityWithUsername(session, "test"+ random);
+                AccountEntity accountEntity = getAccountEntityWithUsername(session, username);
                 accountToDelete.add(accountEntity);
                 fail("Account still created in database regard the correct response");
             }catch (NoResultException e){}
         });
-
         assertThat(response.getStatusCode(), equalTo(400));
         assertThat(response.asString(), jsonEquals(ACCOUNT_EMPTY_OR_NULL_RESPONSE).when(Option.IGNORING_ARRAY_ORDER));
+    }
+
+    //Verify failed response when email and username are duplicate - TC_006
+    @ParameterizedTest
+    @MethodSource("duplicateRegister")
+    public void TC_006(String username1, String username2, String email1, String email2){
+        Account account = new Account("duplicateTesting", username1, email1, "abc123");
+        Response response1= createAccount(account);
+        assertThat(response1.getStatusCode(), equalTo(201));
+
+        sessionFactory.inTransaction(session -> {
+            try{
+                AccountEntity accountEntity = getAccountEntityWithUsername(session, username1);
+                accountToDelete.add(accountEntity);
+            }catch (NoResultException e){}
+        });
+
+        account.setName(username2);
+        account.setEmail(email2);
+        RestAssured.given().log().all()
+                .header("Content-Type", "application/json")
+                .body(account)
+                .post(CREATE_ACCOUNT_PATH)
+                .then().assertThat().body(matchesJsonSchema(DUPLICATE_EMAIL_OR_USERNAME_RESPONSE_SCHEMA))
+                .statusCode(400);
+
+        //If this testcase fails, the created account will be existed in database without getting deleted
+        //So that the data need to be random each time the test ran
+    }
+
+    private static Stream<Arguments> duplicateRegister(){
+        String random = String.valueOf(System.currentTimeMillis());
+        return Stream.of(
+                Arguments.arguments("duplicateUserName"+random,
+                        "duplicateUserName"+random,
+                        String.format("email%s@gmail.com",random),
+                        String.format("differentEmail%s@gmail.com",random)),
+
+                Arguments.arguments("username"+random,
+                        "differentUsername"+random,
+                        String.format("duplicateEmail%s@gmail.com",random),
+                        String.format("duplicateEmail%s@gmail.com",random))
+        );
     }
 
     private static Stream<Arguments> emptyNullRegister(){
@@ -167,6 +212,7 @@ public class ResisterTests {
                 Arguments.arguments("", "", "", "")
         );
     }
+
 
     private static AccountEntity getAccountEntityWithUsername(Session session, String username) {
         AccountEntity accountEntity = session.createSelectionQuery("from AccountEntity where username=:username", AccountEntity.class)
