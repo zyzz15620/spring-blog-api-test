@@ -34,6 +34,10 @@ dependencies {
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation 'mysql:mysql-connector-java:8.0.33'
 
+    // https://mvnrepository.com/artifact/net.javacrumbs.json-unit/json-unit
+    testImplementation 'net.javacrumbs.json-unit:json-unit:4.1.0'
+
+
 
 }
 
