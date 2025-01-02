@@ -1,6 +1,6 @@
 # AutoTestingHub Backend Automation Testing Framework
 
-This is the **API Automation Testing Framework** developed for testing the backend of the [**AutoTestingHub.org**](autotestinghub.org) project. It enables efficient testing of REST APIs, database validations, and entity management.
+This is the **API Automation Testing Framework** developed for testing the backend of the [**AutoTestingHub.org**](https://www.autotestinghub.org) project. It enables efficient testing of REST APIs, database validations, and entity management.
 
 ## Features
 1. **Purpose**: Framework built to test the backend of the AutoTestingHub platform.
