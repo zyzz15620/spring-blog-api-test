@@ -1,45 +1,50 @@
-# AutoTestingHub Backend
+# AutoTestingHub Backend Automation Testing Framework
 
-This is the backend for the **AutoTestingHub** project, developed using **Spring Boot**. The backend serves as the foundation for the **autotestinghub.org** platform, a knowledge-sharing hub for software testing professionals.
+This is the **API Automation Testing Framework** developed for testing the backend of the [**AutoTestingHub.org**](autotestinghub.org) project. It enables efficient testing of REST APIs, database validations, and entity management.
 
 ## Features
-- Basic CRUD Resources:
-  - **Post**: Manage blog posts with categories and comments.
-  - **Comment**: Associate and manage comments for specific blog posts.
-  - **Account**: Handle user accounts and authentication.
-  - **Category**: Organize posts into categories.
-- **Automation Testing**:
-  - Backend APIs are tested with **RestAssured**.
-  - Automation framework repository: [Automation Framework](https://github.com/zyzz15620/spring-blog-api-test)
+1. **Purpose**: Framework built to test the backend of the AutoTestingHub platform.
+2. **Video**: A speeded-up video of the framework's development process is available here:  
+   [Watch on YouTube](https://www.youtube.com/watch?v=EfQ1qrSQ6rE)
+3. **Test Cases**: Google Sheet containing all the test cases:  
+   [View Test Cases](https://docs.google.com/spreadsheets/d/1Lj4-fV29-hv2MXqrjs9NGcxejD2Cee4Jc6nzJ-c02zA/edit?usp=sharing)
+4. **Swagger Documentation**: Refer to the Swagger UI for backend API documentation and manual testing:  
+   [Swagger UI](https://springboot-docker-blog-0-3-release.onrender.com/swagger-ui/index.html#/).  
+   *(Note: The page might load slowly as it uses free hosting, and the server restarts upon each access.)*
+
+## Project Structure
+The framework is organized as follows:
+
+- **`common`**: Utility classes for common functionalities:
+  - `ConstantUtils`: Centralized constants for reusable configurations.
+  - `DatabaseConnection`: Handles database connections for test data verification.
+  - `EnvConfig`: Reads and manages environment-specific configurations.
+  - `MethodUtils`: Helper methods for reusable test logic.
+  - `RestAssuredSetup`: Base setup for RestAssured configurations.
+- **`data`**: Contains test data and schema validators:
+  - `JsonData`: Stores predefined JSON payloads or expected JSON for verification
+  - `SchemaData`: Defines schema validation for response validation.
+- **`model`**: Data models used for database interaction and validation:
+  - `Account`: Model for testing Account-related resources.
+  - `AccountEntity`: ORM representation of the Account resource.
+- **`tests`**: Contains test cases:
+  - `ResisterTests`: Test cases for CRUD operations on the **Account** resource.
+- **`resources`**:
+  - `env`: Environment-specific configuration files, such as `local.env`.
+  - `hibernate.properties`: Hibernate-related configurations for database operations.
+
+## Current Status
+- Currently, tests have only been implemented for **CRUD operations of the Account resource**.
+- The framework is **under development**, with continuous additions for other resources.
 
 ## Tech Stack
-- **Programming Language**: Java
-- **Framework**: Spring Boot
-  - **Spring Security 6**: For authentication and authorization, implementing JWT for secure access.
-  - **Spring Data JPA**: For seamless integration with database operations.
-- **Database**: MySQL
-- **ORM**: Hibernate, for object-relational mapping and efficient database interactions.
-- **API Design**: RESTful APIs, following standard best practices for resource-based architecture.
-- **Authentication**: JWT (JSON Web Token) for stateless and secure authentication.
+- **API Request Handling**: RestAssured
+- **Build Tool**: Gradle
+- **Database Validation and Management**: Hibernate ORM
+- **Entity Validation**: Hibernate Validator
+- **Assertions**:
+  - JUnit 5 for unit testing.
+  - Hamcrest for fluent and expressive assertions.
+  - JsonUnit for JSON validation.
+- **Programming Language**: Java 17
 
-## API Documentation
-[Swagger UI](https://springboot-docker-blog-0-3-release.onrender.com/swagger-ui/index.html#/), this will take a while to load because of free hosting
-
-### Key Endpoints
-- **Post APIs**:
-  - Get all posts: `GET /api/posts`
-  - Create a post: `POST /api/posts`
-- **Comment APIs**:
-  - Get all comments for a post: `GET /api/posts/{postId}/comments`
-  - Add a comment to a post: `POST /api/posts/{postId}/comments`
-- **Category APIs**:
-  - Get all categories: `GET /api/categories`
-  - Create a category: `POST /api/categories`
-- **Account APIs**:
-  - Register: `POST /api/auth/register`
-  - Login: `POST /api/auth/login`
-
-## How to Run
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-repo-link/backend.git
