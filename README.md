@@ -4,8 +4,8 @@ This is the **API Automation Testing Framework** developed for testing the backe
 
 ## Features
 1. **Purpose**: Framework built to test the backend of the AutoTestingHub platform.
-2. **Video**: A speeded-up video of the framework's development process is available here:  
-   [Watch on YouTube](https://www.youtube.com/watch?v=EfQ1qrSQ6rE)
+2. **Video**: A speeded-up video of the framework's development process is available here: [![Youtube Badge](https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=S5XX_2YpJp8)
+
 3. **Test Cases**: Google Sheet containing all the test cases:  
    [View Test Cases](https://docs.google.com/spreadsheets/d/1Lj4-fV29-hv2MXqrjs9NGcxejD2Cee4Jc6nzJ-c02zA/edit?usp=sharing)
 4. **Swagger Documentation**: Refer to the Swagger UI for backend API documentation and manual testing:  
